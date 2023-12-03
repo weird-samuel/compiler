@@ -1,7 +1,8 @@
 from lexer import *
-from parser_1 import *
+from parsercomponent import *
 from interpreter import *
 import sys
+
 
 def main():
     source = sys.argv[1]
@@ -17,5 +18,6 @@ def main():
 
     new_interpreter = Interpreter(asts)
     new_interpreter.execute()
+
 
 main()
