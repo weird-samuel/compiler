@@ -1,8 +1,6 @@
-# Import necessary modules
 import subprocess
 import tkinter as tk
-import tkinter.scrolledtext as scrolledtext
-from tkinter.filedialog import asksaveasfilename, askopenfilename
+from tkinter import ttk, scrolledtext, filedialog
 
 # Global variables
 path = ''
@@ -24,7 +22,7 @@ def run_subprocess(code):
 
         # Using subprocess to run the Python code
         process = subprocess.Popen(
-            ["python", "compiler.py", code],
+            ["python3", "-c", code],
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -75,30 +73,39 @@ def handle_error(exception):
 
 
 def open_file():
-    file_path = askopenfilename(filetypes=[('python files', '*.py')])
-    with open(file_path, 'r') as file:
-        code = file.read()
-        our_editor.delete('1.0', tk.END)
-        our_editor.insert('1.0', code)
-        set_path(file_path)
+    file_path = filedialog.askopenfilename(
+        filetypes=[('Python files', '*.py')])
+    if file_path:
+        with open(file_path, 'r') as file:
+            code = file.read()
+            our_editor.delete('1.0', tk.END)
+            our_editor.insert('1.0', code)
+            set_path(file_path)
 
 # Function to save the code to a file, asking for a file path if none is set
 
 
 def save_as():
     if path == '':
-        file_path = asksaveasfilename(filetypes=[('python files', '*.py')])
+        file_path = filedialog.asksaveasfilename(
+            filetypes=[('Python files', '*.py')])
     else:
         file_path = path
-    with open(file_path, 'w') as file:
-        code = our_editor.get("1.0", tk.END)
-        file.write(code)
-        set_path(file_path)
+    if file_path:
+        with open(file_path, 'w') as file:
+            code = our_editor.get("1.0", tk.END)
+            file.write(code)
+            set_path(file_path)
 
 
 # GUI setup
 root = tk.Tk()
-root.title("My Improved Compiler IDE")
+root.title("CSB Group1's IDE")
+
+# Style configuration
+style = ttk.Style()
+# Choose a theme (other options: "alt", "default", "classic")
+style.theme_use("clam")
 
 # Create a menu bar
 menu_bar = tk.Menu(root)
@@ -108,9 +115,10 @@ root.config(menu=menu_bar)
 file_menu = tk.Menu(menu_bar, tearoff=False)
 menu_bar.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="Save", command=save_as)
-file_menu.add_command(label="Save AS", command=save_as)
+file_menu.add_command(label="Save As", command=save_as)
 file_menu.add_command(label="Open", command=open_file)
-file_menu.add_command(label="Exit", command=exit)
+file_menu.add_separator()
+file_menu.add_command(label="Exit", command=root.destroy)
 
 # Run menu
 run_menu = tk.Menu(menu_bar, tearoff=False)
@@ -119,12 +127,12 @@ run_menu.add_command(label="Execute", command=execute_code)
 
 # Code editor
 our_editor = scrolledtext.ScrolledText(root, wrap=tk.WORD)
-our_editor.pack(expand=True, fill='both')
-our_editor.configure(font=("TkDefaultFont", 10))  # Use default font
+our_editor.pack(expand=True, fill='both', padx=10, pady=5)
+our_editor.configure(font=("Arial", 12))
 
 # Output display
 output_display = scrolledtext.ScrolledText(root, wrap=tk.WORD, height=10)
-output_display.pack(expand=True, fill='both')
+output_display.pack(expand=True, fill='both', padx=10, pady=5)
 # Red color for error messages
 output_display.tag_configure("error", foreground="red")
 output_display.config(state=tk.DISABLED)
