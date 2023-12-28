@@ -12,14 +12,29 @@ def main():
 #Retrieving the source code file from the command line arguments
 
     source = sys.argv[1]
+
+#Creating a new instance of the lexer class and passing the source code as an argument
+
     new_lexer = Lexer(source)
+
+ #Obtaining a list of tokens from the lexer after lexical analysis
 
     tokens = new_lexer.getTokens()
 
+#Craeting a new instance of the parser class and passing the tokens gotten from the lexer as an argument
+
     new_parser = Parser(tokens)
+
+  #Creating a new instance of the interpreter class and passing the list of ASTs as an argument
+
     asts = new_parser.runParse()
 
+#Creating a new instance of the interpreter class and passing the list of ASTs as an argument
+
     new_interpreter = Interpreter(asts)
+
+ #Interpreting and executing the actions specified by the ASTs
+
     new_interpreter.execute()
 
 main()
